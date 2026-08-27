@@ -7,7 +7,7 @@ COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages
 RUN npm ci
 COPY apps ./apps
 COPY packages ./packages
-RUN npm run build
+RUN npm run build -w @cascadia/contracts && npm run build -w @cascadia/api && npm exec --workspace=@cascadia/web -- vite build
 RUN npm prune --omit=dev
 
 FROM node:24-alpine AS runtime
