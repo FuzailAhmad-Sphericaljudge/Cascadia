@@ -2,7 +2,7 @@ FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY apps/api/package.json apps/api/tsconfig.json ./apps/api/
-COPY apps/web/package.json apps/web/tsconfig.json apps/web/tsconfig.app.json apps/web/tsconfig.node.json apps/web/vite.config.ts ./apps/web/
+COPY apps/web/package.json apps/web/tsconfig.json apps/web/vite.config.ts ./apps/web/
 COPY packages/contracts/package.json packages/contracts/tsconfig.json ./packages/contracts/
 RUN npm ci
 COPY apps ./apps
@@ -23,4 +23,4 @@ COPY --from=build --chown=node:node /app/packages/contracts ./packages/contracts
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 CMD node -e "fetch('http://127.0.0.1:3000/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
-CMD ["sh", "-c", "node apps/api/dist/migrate.js && node apps/api/dist/server.js"]
+CMD ["sh", "-c", "cd apps/api && node dist/migrate.js && node dist/server.js"]
