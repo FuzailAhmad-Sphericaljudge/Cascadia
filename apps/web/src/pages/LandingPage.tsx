@@ -30,7 +30,7 @@ export function LandingPage() {
     <section className="hero">
       <div className="hero-copy reveal-in">
         <p className="eyebrow"><span className="live-dot" /> Critical infrastructure / resilience intelligence</p>
-        <h1>See the faultline<br />before it <em>breaks.</em></h1>
+        <h1>Know the path.<br /><em>Govern the outcome.</em></h1>
         <p className="hero-lead">Cascadia unifies real telemetry, operational topology, explainable detection, and human-governed incident response in one living system.</p>
         <div className="hero-actions"><Link className="button button--primary" to="/connect">Enter operations <ArrowRight size={16} /></Link><a className="text-link" href="#platform">Explore the system <ArrowDownRight size={15} /></a></div>
       </div>
