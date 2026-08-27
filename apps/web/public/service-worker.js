@@ -1,1 +1,15 @@
-const cacheName="cascadia-shell-v1";const isApi=(r)=>new URL(r.url).pathname.startsWith("/api/");self.addEventListener("install",e=>e.waitUntil(caches.open(cacheName).then(c=>c.addAll(["/","/manifest.webmanifest","/cascadia-sanctuary.webp"]))));self.addEventListener("activate",e=>e.waitUntil(self.clients.claim()));self.addEventListener("fetch",e=>{if(e.request.method!=="GET"||isApi(e.request))return;e.respondWith(caches.match(e.request).then(c=>c??fetch(e.request).then(r=>{if(r.ok&&new URL(e.request.url).origin===self.location.origin)caches.open(cacheName).then(x=>x.put(e.request,r.clone()));return r;}).catch(()=>caches.match("/"))));});
+const cacheName = "cascadia-shell-v2";
+const isApi = (request) => new URL(request.url).pathname.startsWith("/api/");
+
+self.addEventListener("install", (event) => event.waitUntil(self.skipWaiting()));
+self.addEventListener("activate", (event) => event.waitUntil((async () => {
+  await Promise.all((await caches.keys()).filter((key) => key !== cacheName).map((key) => caches.delete(key)));
+  await self.clients.claim();
+})()));
+self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET" || isApi(event.request)) return;
+  event.respondWith(fetch(event.request).then((response) => {
+    if (response.ok && new URL(event.request.url).origin === self.location.origin && event.request.mode !== "navigate") void caches.open(cacheName).then((cache) => cache.put(event.request, response.clone()));
+    return response;
+  }).catch(async () => (await caches.match(event.request)) ?? (event.request.mode === "navigate" ? await caches.match("/") : Response.error())));
+});
